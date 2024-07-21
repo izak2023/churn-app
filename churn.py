@@ -48,3 +48,40 @@ elif chart_type == "Bar Chart":
 elif chart_type == "Scatter Plot":
     fig = px.scatter(filtered_data, x=filtered_data.columns[0], y=filtered_data.columns[1])
     st.plotly_chart(fig)
+
+# Input fields for features
+st.write("### Input Features")
+
+# Create input fields for each feature
+input_data = {}
+for column in data.columns:
+    input_value = st.text_input(f"Enter {column}", "")
+    input_data[column] = input_value
+
+# Add a validation button
+if st.button("Validate"):
+    # Display the entered data
+    st.write("### Entered Data")
+    st.write(input_data)
+    
+    # Optionally, add more validation logic here
+    st.success("Validation successful!")
+
+# Add a prediction button
+if st.button("Predict"):
+    # Convert input data to a DataFrame
+    input_df = pd.DataFrame([input_data])
+    
+    # Ensure all input values are numeric, converting if necessary
+    input_df = input_df.apply(pd.to_numeric, errors='coerce')
+    
+    # Check for missing values
+    if input_df.isnull().values.any():
+        st.error("Please provide valid numeric inputs for all features.")
+    else:
+        # Make prediction
+        prediction = model.predict(input_df)
+        
+        # Display the prediction
+        st.write("### Prediction")
+        st.write(f"The predicted value is: {prediction[0]}")
